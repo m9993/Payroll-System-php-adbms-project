@@ -19,14 +19,14 @@ if (!$c) {
 function DbCheck(){
 
   // users table
-  $user="SELECT count(*) count FROM dba_tables where table_name = 'USERS'";
-  $a=GetArray($user);
+  $users="SELECT count(*) count FROM dba_tables where table_name = 'USERS'";
+  $a=GetArray($users);
   foreach ($a as $b) {
     $count= $b['COUNT'];
   }
   if ($count<=0){
-    $user="create table USERS (u_phone varchar2(30),u_id number(10)primary key,u_name varchar2(30),u_address varchar2(30),u_dob  varchar2(30))";
-    Execute($user);
+    $users="create table USERS (u_phone varchar2(30),u_id number(20) CONSTRAINT PK_U_ID_USERS PRIMARY KEY,u_name varchar2(30),u_address varchar2(30),u_dob  varchar2(30))";
+    Execute($users);
   }
   // users table
 
@@ -38,7 +38,7 @@ function DbCheck(){
     $count= $b['COUNT'];
   }
   if ($count<=0){
-    $login="create table LOGIN(u_id number(20),u_password varchar2(30),u_email varchar2(30))";
+    $login="create table LOGIN(u_id number(20) CONSTRAINT FK_U_ID_LOGIN REFERENCES USERS,u_password varchar2(30),u_email varchar2(30))";
     Execute($login);
   }
   // login table
@@ -51,7 +51,7 @@ function DbCheck(){
     $count= $b['COUNT'];
   }
   if ($count<=0){
-    $role="create table ROLE(u_id number(20),u_role varchar2(30))";
+    $role="create table ROLE(u_id number(20) CONSTRAINT FK_U_ID_ROLE REFERENCES USERS,u_role varchar2(30))";
     Execute($role);
   }
   // role table
@@ -64,7 +64,7 @@ function DbCheck(){
     $count= $b['COUNT'];
   }
   if ($count<=0){
-    $workingPoint="create table WORKING_POINT(u_id number(20),w_time number(20),w_complain varchar2(30),w_extrahour number(20),w_date varchar2(30))";
+    $workingPoint="create table WORKING_POINT(u_id number(20) CONSTRAINT FK_U_ID_WORKING_POINT REFERENCES USERS,w_time number(20),w_complain varchar2(30),w_extrahour number(20),w_date varchar2(30))";
     Execute($workingPoint);
   }
   // working_point table
@@ -77,7 +77,7 @@ function DbCheck(){
     $count= $b['COUNT'];
   }
   if ($count<=0){
-    $salary="create table SALARY(u_id number(20), basicsalary number(20,2), bonus number(20,2), deduction number(20,2))";
+    $salary="create table SALARY(u_id number(20) CONSTRAINT FK_U_ID_SALARY REFERENCES USERS, basicsalary number(20,2), bonus number(20,2), deduction number(20,2))";
     Execute($salary);
   }
   // salary table
@@ -90,7 +90,7 @@ function DbCheck(){
     $count= $b['COUNT'];
   }
   if ($count<=0){
-    $payment="create table PAYMENT (u_id number(20),incometax number(20,2),hra number(20,2),ma number(20,2),others number(20,2))";
+    $payment="create table PAYMENT (u_id number(20) CONSTRAINT FK_U_ID_PAYMENT REFERENCES USERS,incometax number(20,2),hra number(20,2),ma number(20,2),others number(20,2))";
     Execute($payment);
   }
   // payment table
@@ -103,7 +103,7 @@ function DbCheck(){
     $count= $b['COUNT'];
   }
   if ($count<=0){
-    $payroll="create table PAYROLL (p_id number(20)primary key,u_id number(20),p_date varchar2(30),totalamount number(20,2))";
+    $payroll="create table PAYROLL (p_id number(20) CONSTRAINT PK_P_ID_PAYROLL PRIMARY KEY,u_id number(20) CONSTRAINT FK_U_ID_PAYROLL REFERENCES USERS,p_date varchar2(30),totalamount number(20,2))";
     Execute($payroll);
   }
   // payroll table
@@ -116,7 +116,7 @@ function DbCheck(){
     $count= $b['COUNT'];
   }
   if ($count<=0){
-    $invoice="create table INVOICE (p_id number(20),inv_status varchar2(30))";
+    $invoice="create table INVOICE (p_id number(20) CONSTRAINT FK_P_ID_PAYROLL REFERENCES PAYROLL,inv_status varchar2(30))";
     Execute($invoice);
   }
   // invoice table
